@@ -16,7 +16,11 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/analyze/, '/analyze'),
       },
+      '/file': {
+        target: 'http://localhost:5002', // Nouveau serveur dédié
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/file/, '/file'),
+      },      
     },
   },
 });
-
