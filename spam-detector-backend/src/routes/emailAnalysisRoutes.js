@@ -17,11 +17,12 @@ const isLinkSuspect = (link) => {
   return suspiciousPatterns.some((pattern) => pattern.test(link));
 };
 
-// Fonction d'analyse de l'email
+// Fonction pour analyser un email
 const analyzeEmail = (subject, body) => {
   const totalWords = (subject + " " + body).split(/\s+/).length;
   let totalWeights = { spam: 0, phishing: 0, promotion: 0 };
   let keywordsUsed = { spam: [], phishing: [], promotion: [] };
+
   const links = extractLinks(subject + " " + body);
   const suspiciousLinks = links.filter(isLinkSuspect);
 
@@ -41,7 +42,7 @@ const analyzeEmail = (subject, body) => {
   const probabilities = {
     spam: Math.min(100, (Math.sqrt(totalWeights.spam) / Math.sqrt(totalWords)) * 100),
     phishing: Math.min(100, (Math.sqrt(totalWeights.phishing) / Math.sqrt(totalWords)) * 100),
-    promotion: Math.min(100, (Math.sqrt(totalWeights.promotion) / Math.sqrt(totalWords)) * 100)
+    promotion: Math.min(100, (Math.sqrt(totalWeights.promotion) / Math.sqrt(totalWords)) * 100),
   };
 
   Object.keys(probabilities).forEach((category) => {
@@ -74,7 +75,7 @@ const analyzeEmail = (subject, body) => {
   };
 };
 
-// Route pour l'analyse de l'email
+// Route pour l'analyse classique via formulaire
 router.post('/', async (req, res) => {
   const { subject, body } = req.body;
 
@@ -86,7 +87,7 @@ router.post('/', async (req, res) => {
     const result = analyzeEmail(subject, body);
     res.status(200).send(result);
   } catch (error) {
-    console.error('Erreur lors de l’analyse:', error);
+    console.error('Erreur lors de l’analyse classique:', error);
     res.status(500).send('Erreur lors de l’analyse.');
   }
 });

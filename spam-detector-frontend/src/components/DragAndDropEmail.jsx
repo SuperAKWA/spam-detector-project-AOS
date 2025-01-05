@@ -24,11 +24,19 @@ const DragAndDropEmail = ({ onAnalysisResult }) => {
       return;
     }
 
+    const allowedTypes = ['json', 'txt', 'eml', 'docx'];
+    const fileExtension = file.name.split('.').pop().toLowerCase();
+
+    if (!allowedTypes.includes(fileExtension)) {
+      setError(`Type de fichier non pris en charge (${fileExtension}).`);
+      return;
+    }
+
     const formData = new FormData();
     formData.append('emailFile', file);
 
     try {
-      const response = await axios.post('/analyze', formData, {
+      const response = await axios.post('/file', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       onAnalysisResult(response.data);
@@ -48,7 +56,7 @@ const DragAndDropEmail = ({ onAnalysisResult }) => {
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
     >
-      Glissez-déposez un fichier d'email ici
+      Glissez-déposez un fichier (.json, .txt, .eml, .docx) ici
       {error && <p style={{ color: 'red', marginTop: '10px' }}>{error}</p>}
     </div>
   );

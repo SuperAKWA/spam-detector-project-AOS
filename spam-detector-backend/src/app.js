@@ -22,34 +22,24 @@ mongoose.connect(process.env.MONGODB_URI, {
   .catch((err) => console.error('Erreur lors de la connexion à MongoDB :', err));
 
 // Import des routes
-console.log('Configuration des routes...');
 const emailAnalysisRoutes = require('./routes/emailAnalysisRoutes'); 
-console.log('Routes emailAnalysisRoutes chargées.');
-
+const fileAnalysisRoutes = require('./routes/fileAnalysisRoutes'); 
 const authRoutes = require('./routes/authRoutes'); 
-console.log('Routes authRoutes chargées.');
-
-const emailRoutes = require('./routes/emailRoutes');
-console.log('Routes emailRoutes chargées.');
+const emailRoutes = require('./routes/emailRoutes'); 
 
 // Utilisation des routes
-app.use('/auth', authRoutes);
-app.use('/analyze', emailAnalysisRoutes);
-app.use('/email', emailRoutes);
+app.use('/auth', authRoutes);            // Routes pour l'authentification
+app.use('/analyze', emailAnalysisRoutes); // Routes pour l'analyse via formulaire
+app.use('/file', fileAnalysisRoutes);    // Routes pour l'analyse via fichiers
+app.use('/email', emailRoutes);          // Routes pour gérer les emails
 
-console.log('Routes configurées.');
-
-app.use((req, res, next) => {
-  console.log(`Route non trouvée : ${req.method} ${req.originalUrl}`);
+// Middleware pour les routes non trouvées
+app.use((req, res) => {
+  console.error(`Route non trouvée : ${req.method} ${req.originalUrl}`);
   res.status(404).send('Route non trouvée');
 });
 
 // Lancement du serveur
 app.listen(port, () => {
   console.log(`Serveur backend démarré sur le port ${port}`);
-});
-
-app.use('/analyze', (req, res, next) => {
-  console.log('Request received for /analyze');
-  next();
 });
