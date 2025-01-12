@@ -33,7 +33,7 @@ Spam Detector est une application web permettant d’analyser des emails pour d�
 
 - [Node.js](https://nodejs.org/) version 14 ou supérieure
 - [Docker](https://www.docker.com/)
-- Un compte MongoDB (ou MongoDB Atlas)
+- Une instance MongoDB locale ou distante
 
 ---
 
@@ -55,16 +55,18 @@ Créez un fichier `.env` dans chaque dossier (`auth-services`, `spam-detector-ba
 **Exemple de fichier `.env` pour `auth-services` :**
 
 ```
-MONGODB_URI=<votre-url-mongodb>
-JWT_SECRET=<votre-secret-jwt>
+MONGODB_URI=mongodb://localhost:27017/auth-service
+JWT_SECRET=clesecrete
 ```
 
 **Exemple de fichier `.env` pour `spam-detector-backend` :**
 
 ```
-MONGODB_URI=<votre-url-mongodb>
-VIRUSTOTAL_API_KEY=<votre-clé-api-virustotal>
-JWT_SECRET=<votre-secret-jwt>
+MONGODB_URI=mongodb://localhost:27017/spam-detector
+VIRUSTOTAL_API_KEY=c59ea4bc9b1db78f7492244ce9425458a287efdf9fe80d46097d0c11aaad2712
+JWT_SECRET=clesecrete
+FILE_ANALYZER_PORT=5002
+PORT=5001
 ```
 
 ---
