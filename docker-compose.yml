@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  auth-services:
+    build:
+      context: ./auth-services
+    ports:
+      - "4000:4000"
+    #environment:
+    #  - MONGODB_URI=mongodb+srv://user-test:user-test-1234@cluster0.7d4u5.mongodb.net/auth-service
+    #  - JWT_SECRET=clesecrete
+    depends_on:
+      - mongo
+    env_file:
+      - ./auth-services/.env
+
+  spam-detector-backend:
+    build:
+      context: ./spam-detector-backend
+    ports:
+      - "5001:5001"
+    environment:
+      - MONGODB_URI=mongodb+srv://user-test:user-test-1234@cluster0.7d4u5.mongodb.net/
+      - VIRUSTOTAL_API_KEY=c59ea4bc9b1db78f7492244ce9425458a287efdf9fe80d46097d0c11aaad2712
+      - JWT_SECRET=clesecrete
+    depends_on:
+      - mongo
+    env_file:
+      - ./spam-detector-backend/.env
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+  
+  
+
+
