@@ -30,3 +30,4 @@ services:
 
 volumes:
   mongo-data: # Ajout de cette section pour définir le volume
+
