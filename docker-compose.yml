@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  auth-services:
+    build:
+      context: ./auth-services
+    ports:
+      - "4000:4000"
+    depends_on:
+      - mongo
+    env_file:
+      - ./auth-services/.env
+
+  spam-detector-backend:
+    build:
+      context: ./spam-detector-backend
+    ports:
+      - "5001:5001"
+    depends_on:
+      - mongo
+    env_file:
+      - ./spam-detector-backend/.env
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data: # Ajout de cette section pour définir le volume
