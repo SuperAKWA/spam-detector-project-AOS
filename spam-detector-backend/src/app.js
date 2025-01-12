@@ -14,7 +14,7 @@ app.use(express.json());
 app.use(cors());
 
 // Connexion à MongoDB
-mongoose.connect(process.env.MONGODB_URI, {
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://mongo:27017/spam-detector', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })

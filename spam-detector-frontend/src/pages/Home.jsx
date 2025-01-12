@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import DragAndDropEmail from '../components/DragAndDropEmail';
+import AnalysisResult from '../components/AnalysisResult'; // Réutilisation du composant AnalysisResult
 import axios from 'axios';
 
 const Home = () => {
@@ -7,21 +8,35 @@ const Home = () => {
   const [emailBody, setEmailBody] = useState('');
   const [analysisResult, setAnalysisResult] = useState(null);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
-      const response = await axios.post('/analyze', {
-        subject: emailSubject,
-        body: emailBody,
-      });
-      setAnalysisResult(response.data);
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('Utilisateur non authentifié. Veuillez vous connecter.');
+      }
+
+      console.log('Token JWT récupéré :', token);
+
+      // Appel de l'API pour analyser l'email
+      const response = await axios.post(
+        'http://localhost:5001/analyze',
+        { subject: emailSubject, body: emailBody },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      setAnalysisResult(response.data); // Enregistrement du résultat de l'analyse
       setError('');
     } catch (err) {
       console.error(err);
-      setError("L'analyse a échoué.");
+      setError(err.message || "L'analyse a échoué.");
       setAnalysisResult(null);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -31,11 +46,11 @@ const Home = () => {
 
   return (
     <div style={styles.container}>
-      <h1 style={styles.title}>Soumettre un email</h1>
+      <h1 style={styles.title}>Analysez vos emails</h1>
       <div style={styles.dragAndDrop}>
         <DragAndDropEmail onAnalysisResult={handleAnalysisResult} />
       </div>
-      <p style={styles.orText}>Ou entrez l'email manuellement :</p>
+      <p style={styles.orText}>Ou soumettez un email manuellement :</p>
       <form style={styles.form} onSubmit={handleSubmit}>
         <input
           type="text"
@@ -51,32 +66,13 @@ const Home = () => {
           style={styles.textarea}
         />
         <button type="submit" style={styles.button}>
-          Analyser
+          {loading ? <span className="spinner" /> : 'Analyser'}
         </button>
       </form>
-      {error && <p style={{ color: 'red', marginTop: '10px' }}>{error}</p>}
+      {error && <p style={styles.error}>{error}</p>}
       {analysisResult && (
         <div style={styles.resultContainer}>
-          <h2 style={styles.resultTitle}>Résultat de l'analyse</h2>
-          <p>
-            <strong>Labels détectés :</strong>{' '}
-            {analysisResult.labels.length > 0 ? analysisResult.labels.join(', ') : 'Aucun'}
-          </p>
-          <h3>Probabilités :</h3>
-          <ul>
-            <li>Spam : {analysisResult.probabilities.spam.toFixed(2)}%</li>
-            <li>Phishing : {analysisResult.probabilities.phishing.toFixed(2)}%</li>
-            <li>Promotion : {analysisResult.probabilities.promotion.toFixed(2)}%</li>
-          </ul>
-          <h3>Mots-clés détectés :</h3>
-          <ul>
-            <li>Spam : {analysisResult.details.keywordsUsed.spam.join(', ') || 'Aucun'}</li>
-            <li>Phishing : {analysisResult.details.keywordsUsed.phishing.join(', ') || 'Aucun'}</li>
-            <li>Promotion : {analysisResult.details.keywordsUsed.promotion.join(', ') || 'Aucun'}</li>
-          </ul>
-          <p>
-            <strong>Total de mots :</strong> {analysisResult.details.totalWords}
-          </p>
+          <AnalysisResult result={analysisResult} isLoading={loading} />
         </div>
       )}
     </div>
@@ -86,16 +82,19 @@ const Home = () => {
 const styles = {
   container: {
     padding: '20px',
-    maxWidth: '800px',
+    maxWidth: '900px',
     margin: 'auto',
     fontFamily: "'Roboto', sans-serif",
   },
   title: {
-    fontSize: '24px',
+    fontSize: '28px',
     fontWeight: 'bold',
     marginBottom: '20px',
     color: '#1E293B',
     textAlign: 'center',
+  },
+  dragAndDrop: {
+    marginBottom: '20px',
   },
   orText: {
     textAlign: 'center',
@@ -135,18 +134,15 @@ const styles = {
     cursor: 'pointer',
     fontSize: '16px',
     transition: 'background-color 0.3s',
+    display: 'flex',
+    alignItems: 'center',
+  },
+  error: {
+    color: 'red',
+    marginTop: '10px',
   },
   resultContainer: {
-    marginTop: '20px',
-    padding: '15px',
-    border: '1px solid #E5E7EB',
-    borderRadius: '8px',
-    backgroundColor: '#F9FAFB',
-  },
-  resultTitle: {
-    fontSize: '20px',
-    marginBottom: '10px',
-    color: '#1E293B',
+    marginTop: '30px',
   },
 };
 
