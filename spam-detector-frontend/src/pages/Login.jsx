@@ -16,6 +16,7 @@ const Login = () => {
       const response = await axios.post('/auth/login', { email, password });
       login(response.data.token); // Utilise le contexte pour mettre à jour l'état global
       navigate('/');
+      window.location.reload(); // Forcer le rafraîchissement de la page après la redirection
     } catch (err) {
       setError('Email ou mot de passe incorrect.');
     }

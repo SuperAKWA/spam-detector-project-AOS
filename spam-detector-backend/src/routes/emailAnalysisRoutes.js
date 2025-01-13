@@ -125,7 +125,19 @@ const analyzeEmail = async (subject, body) => {
 
   // Augmente la probabilité de phishing si des liens malveillants sont détectés
   if (maliciousLinks.length > 0) {
-    probabilities.phishing += maliciousLinks.length * 5;
+    probabilities.phishing += maliciousLinks.length * 20;
+  }
+
+  if (probabilities.spam < 100){
+    probabilities.spam = 100;
+  }
+
+  if (probabilities.phishing > 100){
+    probabilities.phishing = 100;
+  }
+
+  if (probabilities.promotion > 100){
+    probabilities.promotion = 100;
   }
 
   // Détermination des catégories de l'email
