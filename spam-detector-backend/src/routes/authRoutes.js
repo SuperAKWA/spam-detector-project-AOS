@@ -6,7 +6,8 @@ const router = express.Router(); // Création d'un routeur Express pour définir
 
 // Inscription
 router.post('/signup', async (req, res) => {
-  /* Route POST pour permettre à un utilisateur de s'inscrire
+  /* 
+  Route POST pour permettre à un utilisateur de s'inscrire
      - L'utilisateur envoie un email et un mot de passe
      - Le mot de passe est automatiquement haché avant d'être sauvegardé grâce à la méthode définie dans le modèle User 
   */
@@ -29,7 +30,8 @@ router.post('/signup', async (req, res) => {
 
 // Connexion
 router.post('/login', async (req, res) => {
-  /* Route POST pour permettre à un utilisateur de se connecter
+  /* 
+  Route POST pour permettre à un utilisateur de se connecter
      - L'utilisateur fournit son email et son mot de passe
      - Vérification si l'utilisateur existe et si le mot de passe est correct 
   */
