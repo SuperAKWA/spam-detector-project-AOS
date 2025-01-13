@@ -126,7 +126,10 @@ const analyzeEmail = async (subject, body) => {
   });
 
   if (maliciousLinks.length > 0) {
-    probabilities.phishing += maliciousLinks.length * 5; // Impact des liens malveillants sur la probabilité de phishing
+    probabilities.phishing += maliciousLinks.length * 20; // Impact des liens malveillants sur la probabilité de phishing
+    if (probabilities.phishing > 100){
+      probabilities.phishing = 100;
+    }
   }
 
   const labels = Object.keys(probabilities).filter(cat => probabilities[cat] > 20); // Catégories à signaler
