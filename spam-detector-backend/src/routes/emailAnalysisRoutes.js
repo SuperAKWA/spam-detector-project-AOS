@@ -5,14 +5,16 @@ const keywords = require('../data/keywords.json'); // Importation des mots-clés
 
 // Fonction pour détecter les liens dans un texte
 const extractLinks = (text) => {
-  /* Utilise une expression régulière pour extraire toutes les URL présentes dans le texte */
+  
+  // Utilise une expression régulière pour extraire toutes les URL présentes dans le texte 
   const urlRegex = /https?:\/\/[^\s]+/g;
   return text.match(urlRegex) || []; // Retourne les liens trouvés ou un tableau vide
 };
 
 // Fonction pour vérifier les liens via VirusTotal
 const checkLinksWithAPI = async (links) => {
-  /* Envoie les liens fournis à l'API VirusTotal pour vérifier leur statut
+  /* 
+  Envoie les liens fournis à l'API VirusTotal pour vérifier leur statut
      (par exemple : "Malicious", "Safe", etc.) 
   */
   const apiKey = process.env.VIRUSTOTAL_API_KEY; // Clé API nécessaire pour authentifier les requêtes
@@ -67,7 +69,8 @@ const checkLinksWithAPI = async (links) => {
 
 // Fonction pour analyser un email
 const analyzeEmail = async (subject, body) => {
-  /* Analyse un email en utilisant :
+  /* 
+  Analyse un email en utilisant :
      - Les liens extraits du contenu
      - Les mots-clés pour détecter les probabilités de spam/phishing/promotion 
   */
@@ -147,7 +150,7 @@ const analyzeEmail = async (subject, body) => {
 
 // Route pour l’analyse classique via formulaire
 router.post('/', async (req, res) => {
-  /* Reçoit une requête avec le sujet et le corps d'un email pour analyse */
+  // Reçoit une requête avec le sujet et le corps d'un email pour analyse
   const token = req.headers.authorization?.split(' ')[1];
   console.log('Token reçu dans la requête :', token); // Log du token pour le débogage
 
