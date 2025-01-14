@@ -128,7 +128,7 @@ const analyzeEmail = async (subject, body) => {
     probabilities.phishing += maliciousLinks.length * 20;
   }
 
-  if (probabilities.spam < 100){
+  if (probabilities.spam > 100){
     probabilities.spam = 100;
   }
 
